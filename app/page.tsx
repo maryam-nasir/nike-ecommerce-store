@@ -1,9 +1,11 @@
 import Image from "next/image";
 import { db } from "@/lib/db";
 import { products } from "@/lib/schema";
+import { sampleProducts } from "@/lib/seed";
 
 export default async function Home() {
-  const productList = await db.select().from(products);
+  // const productList = await db.select().from(products);
+  const productList = sampleProducts;
 
   return (
     <div className="font-sans min-h-screen p-8 pb-20 gap-16 sm:p-20 bg-white dark:bg-black">
