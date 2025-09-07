@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Jost } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import LandingFooter from "@/components/LandingFooter";
 import Footer from "@/components/Footer";
 
 const jost = Jost({
@@ -26,6 +27,7 @@ export default function RootLayout({
       >
         <Navbar />
         {children}
+        <LandingFooter />
         <Footer />
       </body>
     </html>
