@@ -17,7 +17,15 @@ export default async function Home() {
               subtitle={"Men's Shoes"}
               colorsText={idx % 2 === 0 ? "6 Colour" : "4 Colour"}
               price={Number(p.price)}
-              badge={idx === 0 ? "Best Seller" : idx === 1 ? "Extra 20% off" : idx === 2 ? "Extra 10% off" : undefined}
+              badge={
+                idx === 0
+                  ? "Best Seller"
+                  : idx === 1
+                  ? "Extra 20% off"
+                  : idx === 2
+                  ? "Extra 10% off"
+                  : undefined
+              }
             />
           ))}
         </div>
