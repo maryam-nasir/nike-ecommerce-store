@@ -27,7 +27,7 @@ export default function ProductCard({
       href={href}
       className="group block rounded-lg overflow-hidden bg-light-100 dark:bg-black border border-black/5 hover:shadow transition-shadow"
     >
-      <div className="relative aspect-[4/3] overflow-hidden rounded-t-xl bg-light-200">
+      <div className="relative aspect-square overflow-hidden rounded-t-xl bg-light-200">
         {badge && (
           <span className="absolute left-3 top-3 z-10 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white text-green shadow-sm">
             {badge}
