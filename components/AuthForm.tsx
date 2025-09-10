@@ -1,19 +1,30 @@
 "use client";
+
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 interface AuthFormProps {
   type: "sign-in" | "sign-up";
+  onSubmit: (formData: FormData) => Promise<{ok: boolean, userId?: string} | void>;
 }
 
-const AuthForm = ({ type }: AuthFormProps) => {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const AuthForm = ({ type, onSubmit }: AuthFormProps) => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+
+    try {
+      const result = await onSubmit(formData);
+      if (result?.ok) {
+        router.push(`/`);
+      }
+    } catch (error) {
+      console.error('Error', error);
+    }
   };
 
   const labelClasses = "block mb-2 text-sm font-medium text-dark-900";
@@ -24,14 +35,13 @@ const AuthForm = ({ type }: AuthFormProps) => {
     <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6">
       {type === "sign-up" && (
         <div>
-          <label htmlFor="full-name" className={labelClasses}>
-            Full Name
+          <label htmlFor="name" className={labelClasses}>
+            Name
           </label>
           <input
             type="text"
-            id="full-name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
+            id="name"
+            name="name"
             className={inputClasses}
             placeholder="Enter your full name"
             required
@@ -45,8 +55,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
         <input
           type="email"
           id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          name="email"
           className={inputClasses}
           placeholder="johndoe@gmail.com"
           required
@@ -59,8 +68,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
         <input
           type={showPassword ? "text" : "password"}
           id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          name="password"
           className={inputClasses}
           placeholder="minimum 8 characters"
           required

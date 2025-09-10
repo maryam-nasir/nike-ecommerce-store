@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useCartStore } from "@/lib/store";
+import { useCartStore } from "@/store/cart";
 import { useState } from "react";
 import { HiMenu } from "react-icons/hi";
 

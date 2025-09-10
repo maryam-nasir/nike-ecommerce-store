@@ -1,5 +1,6 @@
 import AuthForm from "@/components/AuthForm";
 import SocialProviders from "@/components/SocialProviders";
+import { signIn } from "@/lib/auth/actions";
 import Link from "next/link";
 
 export default function SignIn() {
@@ -33,7 +34,7 @@ export default function SignIn() {
         </div>
       </div>
 
-      <AuthForm type="sign-in" />
+      <AuthForm type="sign-in" onSubmit={signIn} />
     </div>
   );
 }
