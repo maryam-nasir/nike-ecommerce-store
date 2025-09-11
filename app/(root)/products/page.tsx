@@ -41,20 +41,25 @@ const ProductsPage = async ({ searchParams }: { searchParams: Promise<searchPara
 
   if (searchParamsObj.price) {
     const prices = searchParamsObj.price.split(',');
-    let minPrice = 0, maxPrice = 0;
-    prices.forEach(p => {
-      const [min, max] = p.split('-').map(Number);
-      console.log('Max:', max);
-      console.log('Min:', min);
-      
-      minPrice = Math.min(minPrice, min);
-      maxPrice = Math.max(maxPrice, max);
-      
+    // Build an array of [min, max] ranges
+    const priceRanges: { min: number; max: number | null }[] = prices.map((p) => {
+      if (p.includes('-')) {
+        const [min, max] = p.split('-').map(Number);
+        return { min, max };
+      } else {
+        // "150" means "over 150"
+        const min = Number(p);
+        return { min, max: null };
+      }
     });
+
     filteredProducts = filteredProducts.filter((product) =>
       product.variants.some((variant) => {
         const price = variant.salePrice ?? variant.price;
-        return price >= minPrice && (maxPrice ? price <= maxPrice : true);
+        // Match if price falls in any selected range
+        return priceRanges.some(({ min, max }) =>
+          max === null ? price >= min : price >= min && price <= max
+        );
       })
     );
     activeFilters.push({ type: 'price', value: searchParamsObj.price });
