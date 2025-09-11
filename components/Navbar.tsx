@@ -21,10 +21,10 @@ export default function Navbar() {
           </div>
 
           <nav className="hidden md:flex items-center gap-8 text-sm text-black dark:text-white">
-              <Link href="#" className="hover:opacity-70 transition-opacity">Men</Link>
-              <Link href="#" className="hover:opacity-70 transition-opacity">Women</Link>
+              <Link href="/products?gender=men" className="hover:opacity-70 transition-opacity">Men</Link>
+              <Link href="/products?gender=women" className="hover:opacity-70 transition-opacity">Women</Link>
               <Link href="#" className="hover:opacity-70 transition-opacity">Kids</Link>
-              <Link href="#" className="hover:opacity-70 transition-opacity">Collections</Link>
+              <Link href="/products" className="hover:opacity-70 transition-opacity">Collections</Link>
               <Link href="#" className="hover:opacity-70 transition-opacity">Contact</Link>
           </nav>
 
@@ -45,10 +45,10 @@ export default function Navbar() {
         {open && (
           <div className="md:hidden pb-4">
             <nav className="flex flex-col gap-4 text-sm text-black dark:text-white">
-              <Link href="#" onClick={() => setOpen(false)}>Men</Link>
-              <Link href="#" onClick={() => setOpen(false)}>Women</Link>
+              <Link href="/products?gender=men" onClick={() => setOpen(false)}>Men</Link>
+              <Link href="/products?gender=women" onClick={() => setOpen(false)}>Women</Link>
               <Link href="#" onClick={() => setOpen(false)}>Kids</Link>
-              <Link href="#" onClick={() => setOpen(false)}>Collections</Link>
+              <Link href="/products" onClick={() => setOpen(false)}>Collections</Link>
               <Link href="#" onClick={() => setOpen(false)}>Contact</Link>
               <div className="pt-2 flex items-center justify-between">
                 <button className="hover:opacity-70 transition-opacity">Search</button>
