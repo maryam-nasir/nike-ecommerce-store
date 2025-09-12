@@ -85,6 +85,7 @@ const ProductsPage = async ({ searchParams }: { searchParams: Promise<searchPara
                   salePrice={product.minSalePrice ?? undefined}
                   imageUrl={product.imageUrl ?? '/next.svg'}
                   colorCount={product.colorCount}
+                  href={`/products/${product.id}`}
                 />
               ))
             ) : (

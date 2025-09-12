@@ -10,6 +10,7 @@ type ProductCardProps = {
   salePrice?: number;
   imageUrl: string;
   colorCount: number;
+  href?: string;
 };
 
 export default function ProductCard({
@@ -19,10 +20,11 @@ export default function ProductCard({
   salePrice,
   imageUrl,
   colorCount,
+  href = "#",
 }: ProductCardProps) {
   return (
     <Link
-      href={"#"}
+      href={href}
       className="group block rounded-lg overflow-hidden bg-light-100 dark:bg-black border border-black/5 hover:shadow transition-shadow"
     >
       <div className="relative aspect-square overflow-hidden rounded-t-xl bg-light-200">
