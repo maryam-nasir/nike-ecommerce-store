@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { FaTwitter } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import { FaFacebookF } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 
@@ -73,7 +73,7 @@ export default function LandingFooter() {
           <div className="md:col-span-1 flex flex-wrap md:justify-end items-start gap-3">
             <SocialIcon label="X">
               <span className="text-lg">
-                <FaTwitter />
+                <FaXTwitter />
               </span>
             </SocialIcon>
             <SocialIcon label="Facebook">

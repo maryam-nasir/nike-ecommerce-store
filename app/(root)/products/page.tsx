@@ -1,97 +1,37 @@
-import { products, type Product } from '@/lib/placeholder-data';
 import Filters from '@/components/Filters';
 import Sort from '@/components/Sort';
 import ProductCard from '@/components/ProductCard';
+import { parseFilterParams } from '@/lib/utils/query';
+import { getAllProducts } from '@/lib/actions/product';
 
-type searchParamsObj = {
-  gender?: string;
-  size?: string;
-  color?: string;
-  price?: string;
-  sort?: string;
-};
+type searchParamsObj = Record<string, string | string[] | undefined>;
 
 const ProductsPage = async ({ searchParams }: { searchParams: Promise<searchParamsObj> }) => {
-    const searchParamsObj = await searchParams;
-  let filteredProducts: Product[] = [...products];
+  const sp = await searchParams;
+  const urlParams = new URLSearchParams();
+  for (const [k, v] of Object.entries(sp)) {
+    if (Array.isArray(v)) urlParams.set(k, v[0] as string);
+    else if (typeof v === 'string') urlParams.set(k, v);
+  }
+  const filters = parseFilterParams(urlParams);
+  const { products: list, totalCount } = await getAllProducts(filters);
   const activeFilters: { type: string; value: string }[] = [];
 
-  if (searchParamsObj.gender) {
-    const genders = searchParamsObj.gender.split(',');
-    console.log('GENDERS:', genders);
-    filteredProducts = filteredProducts.filter((product) => genders.includes(product.gender));
-    genders.forEach(g => activeFilters.push({ type: 'gender', value: g }));
-  }
+  if (sp.gender) String(sp.gender).split(',').forEach(g => activeFilters.push({ type: 'gender', value: g }));
 
-  if (searchParamsObj.size) {
-    const sizes = searchParamsObj.size.split(',');
-    filteredProducts = filteredProducts.filter((product) =>
-      product.variants.some((variant) => sizes.includes(variant.size.slug))
-    );
-    sizes.forEach(s => activeFilters.push({ type: 'size', value: s }));
-  }
+  if (sp.size) String(sp.size).split(',').forEach(s => activeFilters.push({ type: 'size', value: s }));
 
-  if (searchParamsObj.color) {
-    const colors = searchParamsObj.color.split(',');
-    filteredProducts = filteredProducts.filter((product) =>
-      product.variants.some((variant) => colors.includes(variant.color.slug))
-    );
-    colors.forEach(c => activeFilters.push({ type: 'color', value: c }));
-  }
+  if (sp.color) String(sp.color).split(',').forEach(c => activeFilters.push({ type: 'color', value: c }));
 
-  if (searchParamsObj.price) {
-    const prices = searchParamsObj.price.split(',');
-    // Build an array of [min, max] ranges
-    const priceRanges: { min: number; max: number | null }[] = prices.map((p) => {
-      if (p.includes('-')) {
-        const [min, max] = p.split('-').map(Number);
-        return { min, max };
-      } else {
-        // "150" means "over 150"
-        const min = Number(p);
-        return { min, max: null };
-      }
-    });
+  if (sp.price) activeFilters.push({ type: 'price', value: String(sp.price) });
 
-    filteredProducts = filteredProducts.filter((product) =>
-      product.variants.some((variant) => {
-        const price = variant.salePrice ?? variant.price;
-        // Match if price falls in any selected range
-        return priceRanges.some(({ min, max }) =>
-          max === null ? price >= min : price >= min && price <= max
-        );
-      })
-    );
-    activeFilters.push({ type: 'price', value: searchParamsObj.price });
-  }
-
-  if (searchParamsObj.sort) {
-    switch (searchParamsObj.sort) {
-      case 'newest':
-        filteredProducts.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-        break;
-      case 'price_asc':
-        filteredProducts.sort(
-          (a, b) =>
-            (a.variants[0].salePrice ?? a.variants[0].price) -
-            (b.variants[0].salePrice ?? b.variants[0].price)
-        );
-        break;
-      case 'price_desc':
-        filteredProducts.sort(
-          (a, b) =>
-            (b.variants[0].salePrice ?? b.variants[0].price) -
-            (a.variants[0].salePrice ?? a.variants[0].price)
-        );
-        break;
-    }
-  }
+  // Sorting handled on server
 
   const getClearFilterUrl = (type: string, value: string) => {
     const params = new URLSearchParams();
-    Object.entries(searchParamsObj).forEach(([key, val]) => {
+    Object.entries(sp).forEach(([key, val]) => {
       if (val) {
-        params.set(key, val);
+        params.set(key, String(val));
       }
     });
 
@@ -110,7 +50,7 @@ const ProductsPage = async ({ searchParams }: { searchParams: Promise<searchPara
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between items-center p-4">
-        <h1 className="text-2xl font-bold">New Arrivals ({filteredProducts.length})</h1>
+        <h1 className="text-2xl font-bold">New Arrivals ({totalCount})</h1>
         <div className="flex items-center gap-4">
           <div className="hidden lg:flex items-center gap-2">
             <p>Hide Filters</p>
@@ -135,16 +75,16 @@ const ProductsPage = async ({ searchParams }: { searchParams: Promise<searchPara
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
+            {list.length > 0 ? (
+              list.map((product) => (
                 <ProductCard
                   key={product.id}
                   name={product.name}
-                  category={product.category}
-                  price={product.variants[0].price}
-                  salePrice={product.variants[0].salePrice}
-                  imageUrl={product.variants[0].images[0].url}
-                  colorCount={product.variants.length}
+                  category={product.category ?? ''}
+                  price={product.minCurrentPrice}
+                  salePrice={product.minSalePrice ?? undefined}
+                  imageUrl={product.imageUrl ?? '/next.svg'}
+                  colorCount={product.colorCount}
                 />
               ))
             ) : (

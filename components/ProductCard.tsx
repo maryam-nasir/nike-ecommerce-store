@@ -49,12 +49,12 @@ export default function ProductCard({
           <div className="flex flex-col items-end">
             <span
               className={`text-body-medium text-dark-900 dark:text-white/80 whitespace-nowrap ${
-                salePrice ? "line-through text-gray-500" : ""
+                salePrice && salePrice !== price ? "line-through text-gray-500" : ""
               }`}
             >
               ${price.toFixed(2)}
             </span>
-            {salePrice && (
+            {salePrice && salePrice !== price && (
               <span className="text-body-medium text-red-500 whitespace-nowrap">
                 ${salePrice.toFixed(2)}
               </span>
