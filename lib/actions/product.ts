@@ -10,6 +10,8 @@ import {
   // Filters
   colors,
   sizes,
+  reviews as reviewsTable,
+  users,
 } from "@/lib/db/schema";
 import { sql, and, or, ilike, inArray, desc, eq } from "drizzle-orm";
 
@@ -259,7 +261,7 @@ export async function getProduct(productId: string): Promise<GetProductDetails |
     left join colors col on col.id = v.color_id
     left join sizes s on s.id = v.size_id
     left join product_images pi on pi.product_id = p.id
-    where p.id = ${productId}
+    where p.id = ${productId} and p.is_published = true
   `);
 
   if (rows.rows.length === 0) return null;
@@ -324,6 +326,121 @@ export async function getProduct(productId: string): Promise<GetProductDetails |
   product.variants = Array.from(variantMap.values());
 
   return product;
+}
+
+export type Review = {
+  id: string;
+  author: string;
+  rating: number;
+  title?: string;
+  content: string;
+  createdAt: string;
+};
+
+export async function getProductReviews(productId: string): Promise<Review[]> {
+  // Reviews joined with users; schema has no approval flag, so we return all existing reviews
+  const rows = await db
+    .select({
+      id: reviewsTable.id,
+      rating: reviewsTable.rating,
+      comment: reviewsTable.comment,
+      createdAt: reviewsTable.createdAt,
+      authorName: users.name,
+      authorEmail: users.email,
+    })
+    .from(reviewsTable)
+    .leftJoin(users, eq(users.id, reviewsTable.userId))
+    .where(eq(reviewsTable.productId, productId))
+    .orderBy(desc(reviewsTable.createdAt));
+
+  if (rows.length === 0) {
+    // Dummy fallback when no reviews exist in DB
+    return [];
+  }
+
+  return rows.map((r) => ({
+    id: r.id,
+    author: r.authorName ?? r.authorEmail ?? "Anonymous",
+    rating: r.rating,
+    title: undefined,
+    content: r.comment ?? "",
+    createdAt: new Date(r.createdAt).toISOString(),
+  }));
+}
+
+export type RecommendedProduct = {
+  id: string;
+  title: string;
+  price: number;
+  compareAt?: number;
+  imageUrl: string;
+};
+
+export async function getRecommendedProducts(productId: string, limit: number = 6): Promise<RecommendedProduct[]> {
+  // Find the anchor product's attributes
+  const [anchor] = await db
+    .select({
+      id: products.id,
+      categoryId: products.categoryId,
+      brandId: products.brandId,
+      genderId: products.genderId,
+    })
+    .from(products)
+    .where(eq(products.id, productId));
+
+  if (!anchor) return [];
+
+  // Select related products by category/brand/gender with a representative image and price
+  const rows = await db
+    .select({
+      id: products.id,
+      title: products.name,
+      // price selection: min current price across variants
+      price: sql<string>`min(coalesce(${productVariants.salePrice}, ${productVariants.price}))`.as("price"),
+      compareAt: sql<string>`nullif(min(${productVariants.price}), min(coalesce(${productVariants.salePrice}, ${productVariants.price})))`.as(
+        "compare_at"
+      ),
+      imageUrl: sql<string>`coalesce(
+        (
+          select pi.url from product_images pi
+          where pi.product_id = ${products.id} and pi.variant_id is null
+          order by pi.is_primary desc, pi.sort_order asc
+          limit 1
+        ),
+        (
+          select pi2.url from product_images pi2
+          where pi2.product_id = ${products.id}
+          order by pi2.is_primary desc, pi2.sort_order asc
+          limit 1
+        )
+      )`.as("image_url"),
+    })
+    .from(products)
+    .innerJoin(productVariants, eq(productVariants.productId, products.id))
+    .where(
+      and(
+        eq(products.isPublished, true),
+        sql`(${products.id} <> ${productId})`,
+        sql`(
+          ${products.categoryId} = ${anchor.categoryId}
+          or ${products.brandId} = ${anchor.brandId}
+          or ${products.genderId} = ${anchor.genderId}
+        )`
+      )
+    )
+    .groupBy(products.id, products.name)
+    .orderBy(desc(products.createdAt))
+    .limit(Math.min(Math.max(Number(limit) || 6, 1), 12));
+
+  return rows
+    .map((r) => ({
+      id: r.id,
+      title: r.title,
+      price: Number(r.price ?? 0),
+      compareAt: r.compareAt != null ? Number(r.compareAt) : undefined,
+      imageUrl: r.imageUrl ?? "",
+    }))
+    .filter((p) => Boolean(p.imageUrl));
 }
 
 
