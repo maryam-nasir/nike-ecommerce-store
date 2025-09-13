@@ -11,6 +11,7 @@ type ProductCardProps = {
   imageUrl: string;
   colorCount: number;
   href?: string;
+  badge?: string;
 };
 
 export default function ProductCard({
@@ -21,6 +22,7 @@ export default function ProductCard({
   imageUrl,
   colorCount,
   href = "#",
+  badge,
 }: ProductCardProps) {
   return (
     <Link
@@ -28,9 +30,9 @@ export default function ProductCard({
       className="group block rounded-lg overflow-hidden bg-light-100 dark:bg-black border border-black/5 hover:shadow transition-shadow"
     >
       <div className="relative aspect-square overflow-hidden rounded-t-xl bg-light-200">
-        {salePrice && (
+        {(badge || salePrice) && (
           <span className="absolute left-3 top-3 z-10 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white text-green shadow-sm">
-            Extra 20% off
+            {badge ?? "Extra 20% off"}
           </span>
         )}
         <Image
