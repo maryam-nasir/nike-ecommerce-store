@@ -7,6 +7,7 @@ import Card from "@/components/Card";
 import { getProduct, getProductReviews, getRecommendedProducts } from "@/lib/actions/product";
 import type { GetProductDetails } from "@/lib/actions/product";
 import type { Variant as GalleryVariant, Image as GalleryImage } from "@/lib/placeholder-data";
+import AddToBagButton from "@/components/AddToBagButton";
 
 type PageProps = {
   params: Promise<{ id: string }>
@@ -172,10 +173,7 @@ export default async function ProductDetailsPage({ params }: PageProps) {
           </div>
 
           <div className="mt-6 flex flex-col gap-3">
-            <button className="inline-flex items-center justify-center gap-2 h-12 rounded-full bg-dark-900 text-white w-full">
-              <ShoppingBag className="h-5 w-5" />
-              Add to Bag
-            </button>
+            <AddToBagButton variantId={product.variants[0]?.id} />
             <button className="inline-flex items-center justify-center gap-2 h-12 rounded-full border border-light-300 bg-light-100 text-dark-900 w-full">
               <Heart className="h-5 w-5" />
               Favorite
@@ -202,5 +200,3 @@ export default async function ProductDetailsPage({ params }: PageProps) {
     </div>
   );
 }
-
-

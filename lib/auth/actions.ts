@@ -3,6 +3,7 @@
 import { cookies, headers } from "next/headers";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { mergeGuestCartIntoUserCart } from "@/lib/actions/cart";
 import { auth } from "@/lib/auth";
 import { guests } from "@/lib/db/schema";
 import { eq, and, lt } from "drizzle-orm";
@@ -51,8 +52,7 @@ export async function signUp(formData: FormData) {
       password: data.password,
     },
   });
-
-  await migrateGuestToUser();
+  await mergeGuestCartIntoUserCart();
   return { ok: true, userId: response.user?.id };
 }
 
@@ -75,8 +75,7 @@ export async function signIn(formData: FormData) {
       password: data.password,
     },
   });
-
-  await migrateGuestToUser();
+  await mergeGuestCartIntoUserCart();
   return { ok: true, userId: response.user?.id };
 }
 
@@ -137,7 +136,7 @@ export async function guestSession() {
 }
 
 export async function mergeGuestCartWithUserCart() {
-  await migrateGuestToUser();
+  await mergeGuestCartIntoUserCart();
   return { ok: true };
 }
 

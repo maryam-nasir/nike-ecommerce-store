@@ -1,82 +1,91 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { CartDTO } from "@/lib/actions/cart";
+import { getCart, addCartItem, updateCartItem, removeCartItem, clearCart as serverClear } from "@/lib/actions/cart";
 
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image?: string;
-}
+type ClientCartItem = CartDTO["items"][number];
+export type CartLineItem = ClientCartItem;
 
 interface CartState {
-  items: CartItem[];
+  items: ClientCartItem[];
+  subtotal: number;
+  estimatedShipping: number;
   total: number;
-  addItem: (item: Omit<CartItem, "quantity">) => void;
-  removeItem: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
-  clearCart: () => void;
-  getItemCount: () => number;
+  itemCount: number;
+  isHydrating: boolean;
+  hydrate: () => Promise<void>;
+  add: (variantId: string, quantity?: number) => Promise<void>;
+  update: (cartItemId: string, quantity: number) => Promise<void>;
+  remove: (cartItemId: string) => Promise<void>;
+  clear: () => Promise<void>;
 }
 
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      subtotal: 0,
+      estimatedShipping: 0,
       total: 0,
-      addItem: (item) => {
-        const items = get().items;
-        const existingItem = items.find((i) => i.id === item.id);
-
-        if (existingItem) {
+      itemCount: 0,
+      isHydrating: false,
+      async hydrate() {
+        try {
+          set({ isHydrating: true });
+          const cart = await getCart();
           set({
-            items: items.map((i) =>
-              i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-            ),
+            items: cart.items,
+            subtotal: cart.subtotal,
+            estimatedShipping: cart.estimatedShipping,
+            total: cart.total,
+            itemCount: cart.itemCount,
+            isHydrating: false,
           });
-        } else {
-          set({
-            items: [...items, { ...item, quantity: 1 }],
-          });
+        } catch {
+          set({ isHydrating: false });
         }
-
-        // Update total
-        const newItems = get().items;
-        const total = newItems.reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0
-        );
-        set({ total });
       },
-      removeItem: (id) => {
-        const items = get().items.filter((item) => item.id !== id);
-        const total = items.reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0
-        );
-        set({ items, total });
+      async add(variantId, quantity = 1) {
+        const cart = await addCartItem({ productVariantId: variantId, quantity });
+        set({
+          items: cart.items,
+          subtotal: cart.subtotal,
+          estimatedShipping: cart.estimatedShipping,
+          total: cart.total,
+          itemCount: cart.itemCount,
+        });
       },
-      updateQuantity: (id, quantity) => {
-        if (quantity <= 0) {
-          get().removeItem(id);
-          return;
-        }
-
-        const items = get().items.map((item) =>
-          item.id === id ? { ...item, quantity } : item
-        );
-        const total = items.reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0
-        );
-        set({ items, total });
+      async update(cartItemId, quantity) {
+        const cart = await updateCartItem({ cartItemId, quantity });
+        set({
+          items: cart.items,
+          subtotal: cart.subtotal,
+          estimatedShipping: cart.estimatedShipping,
+          total: cart.total,
+          itemCount: cart.itemCount,
+        });
       },
-      clearCart: () => set({ items: [], total: 0 }),
-      getItemCount: () =>
-        get().items.reduce((sum, item) => sum + item.quantity, 0),
+      async remove(cartItemId) {
+        const cart = await removeCartItem(cartItemId);
+        set({
+          items: cart.items,
+          subtotal: cart.subtotal,
+          estimatedShipping: cart.estimatedShipping,
+          total: cart.total,
+          itemCount: cart.itemCount,
+        });
+      },
+      async clear() {
+        const cart = await serverClear();
+        set({
+          items: cart.items,
+          subtotal: cart.subtotal,
+          estimatedShipping: cart.estimatedShipping,
+          total: cart.total,
+          itemCount: cart.itemCount,
+        });
+      },
     }),
-    {
-      name: "cart-storage",
-    }
+    { name: "cart-sync" }
   )
 );

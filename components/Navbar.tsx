@@ -7,7 +7,7 @@ import { useState } from "react";
 import { HiMenu } from "react-icons/hi";
 
 export default function Navbar() {
-  const itemCount = useCartStore((s) => s.items.reduce((acc, i) => acc + i.quantity, 0));
+  const itemCount = useCartStore((s) => s.itemCount);
   const [open, setOpen] = useState(false);
 
   return (
@@ -30,7 +30,7 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-6 text-sm text-black dark:text-white">
             <button className="hover:opacity-70 transition-opacity">Search</button>
-            <Link href="#" className="hover:opacity-70 transition-opacity">My Cart ({itemCount})</Link>
+            <Link href="/cart" className="hover:opacity-70 transition-opacity">My Cart ({itemCount})</Link>
           </div>
 
           <button
@@ -52,7 +52,7 @@ export default function Navbar() {
               <Link href="#" onClick={() => setOpen(false)}>Contact</Link>
               <div className="pt-2 flex items-center justify-between">
                 <button className="hover:opacity-70 transition-opacity">Search</button>
-                <Link href="#" className="hover:opacity-70 transition-opacity">My Cart ({itemCount})</Link>
+                <Link href="/cart" className="hover:opacity-70 transition-opacity">My Cart ({itemCount})</Link>
               </div>
             </nav>
           </div>
