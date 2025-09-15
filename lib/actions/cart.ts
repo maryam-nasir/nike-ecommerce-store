@@ -11,7 +11,6 @@ import {
   products,
   colors,
   sizes,
-  productImages,
   guests,
 } from "@/lib/db/schema";
 import { z } from "zod";
@@ -45,17 +44,6 @@ async function getSessionUser() {
   } catch {
     return null;
   }
-}
-
-async function getOrCreateGuestByCookie() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("guest_session")?.value;
-  if (!token) return null;
-  const [g] = await db
-    .select({ id: guests.id, sessionToken: guests.sessionToken })
-    .from(guests)
-    .where(eq(guests.sessionToken, token));
-  return g ?? null;
 }
 
 export async function ensureActiveCart(): Promise<{ cartId: string; owner: { userId?: string | null; guestId?: string | null } }>

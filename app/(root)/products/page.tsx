@@ -3,6 +3,7 @@ import Sort from '@/components/Sort';
 import ProductCard from '@/components/ProductCard';
 import { parseFilterParams } from '@/lib/utils/query';
 import { getAllProducts } from '@/lib/actions/product';
+import Link from 'next/link';
 
 type searchParamsObj = Record<string, string | string[] | undefined>;
 
@@ -64,13 +65,13 @@ const ProductsPage = async ({ searchParams }: { searchParams: Promise<searchPara
         <main className="flex-1 p-4">
           <div className="flex flex-wrap gap-2 mb-4">
             {activeFilters.map(filter => (
-              <a href={getClearFilterUrl(filter.type, filter.value)} key={`${filter.type}-${filter.value}`} className="flex items-center gap-2 bg-gray-200 rounded-full px-3 py-1 text-sm">
+              <Link href={getClearFilterUrl(filter.type, filter.value)} key={`${filter.type}-${filter.value}`} className="flex items-center gap-2 bg-gray-200 rounded-full px-3 py-1 text-sm">
                 {filter.value}
                 <span className="text-xs">✕</span>
-              </a>
+              </Link>
             ))}
             {activeFilters.length > 0 && (
-               <a href="/products" className="text-sm text-gray-600 hover:underline">Clear all</a>
+               <Link href="/products" className="text-sm text-gray-600 hover:underline">Clear all</Link>
             )}
           </div>
 

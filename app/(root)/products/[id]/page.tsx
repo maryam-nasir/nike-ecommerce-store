@@ -6,8 +6,9 @@ import CollapsibleSection from "@/components/CollapsibleSection";
 import Card from "@/components/Card";
 import { getProduct, getProductReviews, getRecommendedProducts } from "@/lib/actions/product";
 import type { GetProductDetails } from "@/lib/actions/product";
-import type { Variant as GalleryVariant, Image as GalleryImage } from "@/lib/placeholder-data";
+import type { Variant as GalleryVariant, Image as GalleryImage, Variant } from "@/lib/placeholder-data";
 import AddToBagButton from "@/components/AddToBagButton";
+import Link from "next/link";
 
 type PageProps = {
   params: Promise<{ id: string }>
@@ -119,7 +120,7 @@ export default async function ProductDetailsPage({ params }: PageProps) {
         <div className="mx-auto max-w-xl text-center">
           <h1 className="text-heading-3 text-dark-900 mb-2">Product not found</h1>
           <p className="text-body text-dark-700 mb-6">The product you’re looking for doesn’t exist or may have been removed.</p>
-          <a href="/products" className="inline-flex h-11 items-center justify-center rounded-full bg-dark-900 px-5 text-white">Back to Products</a>
+          <Link href="/products" className="inline-flex h-11 items-center justify-center rounded-full bg-dark-900 px-5 text-white">Back to Products</Link>
         </div>
       </div>
     );
@@ -139,7 +140,7 @@ export default async function ProductDetailsPage({ params }: PageProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 py-6 lg:py-10">
         <div className="lg:col-span-7">
           {hasGallery && (
-            <ProductGallery title={product.name} variants={galleryVariants as any} />
+            <ProductGallery title={product.name} variants={galleryVariants as Variant[]} />
           )}
         </div>
 

@@ -139,14 +139,3 @@ export async function mergeGuestCartWithUserCart() {
   await mergeGuestCartIntoUserCart();
   return { ok: true };
 }
-
-async function migrateGuestToUser() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("guest_session")?.value;
-  if (!token) {
-    return;
-  }
-
-  await db.delete(guests).where(eq(guests.sessionToken, token));
-  cookieStore.delete("guest_session");
-}
