@@ -1,6 +1,6 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { sql, and, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
@@ -39,7 +39,7 @@ export type CartDTO = {
 
 async function getSessionUser() {
   try {
-    const session = await auth.api.getSession({ headers: {} as any });
+    const session = await auth.api.getSession({ headers: new Headers(await headers()) });
     return session?.user ?? null;
   } catch {
     return null;

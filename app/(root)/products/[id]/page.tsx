@@ -153,7 +153,7 @@ export default async function ProductDetailsPage({ params }: PageProps) {
           </div>
 
           <h1 className="text-heading-3 text-dark-900 mb-1">{product.name}</h1>
-          <p className="text-body text-dark-700 mb-4 capitalize">{product.gender?.label ?? "Unisex"}'s Shoes</p>
+          <p className="text-body text-dark-700 mb-4 capitalize">{product.gender?.label ?? "Unisex"}&apos;s Shoes</p>
 
           <div className="flex items-baseline gap-3 mb-2">
             <span className="text-body-medium text-dark-900">${formatMoney(minCurrent)}</span>

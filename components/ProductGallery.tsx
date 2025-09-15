@@ -206,6 +206,5 @@ export function Swatches({ variants, value, onChange }: SwatchesProps) {
 }
 
 // Attach as namespaced component for ergonomic usage
-(ProductGallery as any).Swatches = Swatches;
-
+(ProductGallery as { Swatches?: typeof Swatches }).Swatches = Swatches;
 
