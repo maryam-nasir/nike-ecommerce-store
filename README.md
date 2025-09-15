@@ -39,7 +39,8 @@ git clone https://github.com/maryam-nasir/nike-ecommerce-store.git
 cd nike-ecommerce-store
 ```
 
-**Installation**<br />
+**Installation**
+
 Install the project dependencies using npm:
 
 ```
@@ -72,7 +73,7 @@ Open [http://localhost:3000](http://localhost:3000) in the browser to view the p
 
 ## Access the Deployed version on Vercel
 
-The app is deployed on Vercel and can be accessed here: [Nike Ecommerce App]().
+The app is deployed on Vercel and can be accessed here: [Nike Ecommerce App](https://nike-ecommerce-store-henna.vercel.app/).
 
 ## Acknowledgements
 
