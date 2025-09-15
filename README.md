@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nike Ecommerce app with Cursor
+
+A Nike-inspired e‑commerce store built with Next.js 15, React 19, Tailwind CSS v4, and Drizzle ORM. It features a landing page, product catalog with filters, product detail pages, cart, and authentication. The entire project is developed using cursor.
+
+## Tech Stack
+
+- Next.js
+- TypeScript
+- Tailwind CSS
+- Zustand
+- Better Auth
+- Neon
+- Drizzle ORM
+- Cursor
+
+## Main Features
+
+- **Landing Page**: A fast, engaging homepage that introduces your brand and products with smooth animations and clear calls to action.
+
+- **Product Listing Page**: Browse all products with filters, sorting, and real-time availability—powered by Cursor AI-generated content for dynamic updates.
+
+- **Product Details Page**: Detailed product info, images, and reviews with AI-enhanced descriptions to help customers make confident buying decisions.
+
+- **Auth Pages**: Secure and seamless user signup and login using Better Auth, ensuring smooth access without backend hassles.
 
 ## Getting Started
 
-First, run the development server:
+Follow these steps to set up the project locally on your machine.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+**Prerequisites**<br />
+Make sure you have the following installed on your machine:
+
+- [Node.js](https://nodejs.org/en)
+
+**Clone the Repository**
+
+```
+git clone https://github.com/maryam-nasir/nike-ecommerce-store.git
+cd nike-ecommerce-store
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Installation**<br />
+Install the project dependencies using npm:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Set Up Environment Variables**
 
-## Learn More
+Create a new file named `.env.local` in the root of your project and add the following content:
 
-To learn more about Next.js, take a look at the following resources:
+```env
+# Database
+DATABASE_URL="postgresql://username:password@host:port/database"
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Better Auth
+BETTER_AUTH_SECRET="your-secret-key-here"
+BETTER_AUTH_URL="http://localhost:3000"
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Replace the placeholder values with your actual NeonDB and BetterAuth values and secrets.
 
-## Deploy on Vercel
+**Running the Project**<br />
+Run:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+npm run dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000) in the browser to view the project.
+
+## Access the Deployed version on Vercel
+
+The app is deployed on Vercel and can be accessed here: [Nike Ecommerce App]().
+
+## Acknowledgements
+
+I have developed this project by following the JavaScript Mastery tutorial on [YouTube](https://www.youtube.com/watch?v=fZdTYswuZjU).
