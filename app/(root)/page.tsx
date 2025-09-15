@@ -92,7 +92,7 @@ export default function Home() {
             <div className="absolute left-6 bottom-6 sm:left-8 sm:bottom-8">
               <p className="text-heading-3 text-white tracking-tight">REACT PRESTO</p>
               <p className="mt-2 text-body text-white/90 max-w-md">With React foam for the most comfortable Presto ever.</p>
-              <Link href="#" className="mt-4 inline-flex px-4 py-2 rounded-full bg-white text-dark-900 text-body-medium">Shop Now</Link>
+              <Link href="/products" className="mt-4 inline-flex px-4 py-2 rounded-full bg-white text-dark-900 text-body-medium">Shop Now</Link>
             </div>
           </div>
 
@@ -120,7 +120,7 @@ export default function Home() {
             <p className="mt-4 text-lead text-dark-700">
               Take advantage of brand new, proprietary cushioning technology with a fresh pair of Nike react shoes.
             </p>
-            <Link href="#" className="mt-6 inline-flex px-5 py-3 rounded-full bg-dark-900 text-white text-body-medium">Shop Now</Link>
+            <Link href="/products" className="mt-6 inline-flex px-5 py-3 rounded-full bg-dark-900 text-white text-body-medium">Shop Now</Link>
           </div>
           <div className="lg:col-span-7 relative h-[360px] sm:h-[420px]">
             <Image src="/feature.png" alt="Nike React Presto" fill className="object-contain" />
